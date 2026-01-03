@@ -1,60 +1,63 @@
-package com.example.pokeapi.ui.theme
+package com.example.pokeapi.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.pokeapi.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pokeapi.R  // ← IMPORTANTE: agregar este import
+import com.example.pokeapi.databinding.FragmentPokedexBinding
+import com.example.pokeapi.model.Pokemon
+import com.example.pokeapi.ui.adapter.PokemonAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PokedexFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PokedexFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentPokedexBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: PokemonAdapter
+
+    private val pokemonList = listOf(
+        Pokemon(1, "Pikachu", "Ratón eléctrico amarillo"),
+        Pokemon(2, "Charizard", "Dragón de fuego volador"),
+        Pokemon(3, "Bulbasaur", "Semilla dinosaurio"),
+        Pokemon(4, "Squirtle", "Tortuga acuática"),
+        Pokemon(5, "Jigglypuff", "Globo cantante")
+    )
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pokedex, container, false)
+    ): View {
+        _binding = FragmentPokedexBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PokedexFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PokedexFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = PokemonAdapter(pokemonList) { pokemon ->
+            // Cuando se hace click en un Pokémon
+            val detailsFragment = DetallesFragment()
+
+            // Cambiar al fragmento de detalles
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, detailsFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
