@@ -4,41 +4,63 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.pokeapi.databinding.FragmentDetallesBinding  // ← CAMBIADO
+import com.example.pokeapi.R
 
 class DetallesFragment : Fragment() {
-
-    // ViewBinding con el nombre CORRECTO
-    private var _binding: FragmentDetallesBinding? = null  // ← CAMBIADO
-    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflar el layout con el nombre CORRECTO
-        _binding = FragmentDetallesBinding.inflate(inflater, container, false)  // ← CAMBIADO
-        return binding.root
+
+        return inflater.inflate(R.layout.fragment_detalles, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configurar los datos
-        binding.textPokemonName.text = "Pikachu"
-        binding.textPokemonId.text = "ID: 25"
-        binding.textPokemonDescription.text = "Un Pokémon ratón eléctrico amarillo"
 
-        // Configurar el botón de volver
-        binding.buttonBack.setOnClickListener {
+        val pokemonName = arguments?.getString("pokemonName") ?: "Sin nombre"
+        val pokemonId = arguments?.getInt("pokemonId") ?: 0
+
+
+        val textPokemonName: TextView = view.findViewById(R.id.textPokemonName)
+        val textPokemonId: TextView = view.findViewById(R.id.textPokemonId)
+        val textPokemonFavorite: TextView = view.findViewById(R.id.textPokemonFavorite)
+        val textPokemonDescription: TextView = view.findViewById(R.id.textPokemonDescription)
+        val buttonBack: Button = view.findViewById(R.id.buttonBack)
+        val buttonToggleFavorite: Button = view.findViewById(R.id.buttonToggleFavorite)
+
+
+        textPokemonName.text = pokemonName
+        textPokemonId.text = "ID: $pokemonId"
+        textPokemonFavorite.text = "No favorito"
+        textPokemonDescription.text = "Este es un Pokémon de la Pokédex. Haz click en la estrella para marcarlo como favorito."
+
+
+        buttonBack.setOnClickListener {
+
             requireActivity().supportFragmentManager.popBackStack()
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+
+        buttonToggleFavorite.setOnClickListener {
+
+            val esFavorito = textPokemonFavorite.text.toString().contains("FAVORITO")
+
+            if (esFavorito) {
+
+                textPokemonFavorite.text = "No favorito"
+                buttonToggleFavorite.text = "⭐ Marcar Favorito"
+            } else {
+
+                textPokemonFavorite.text = "⭐ FAVORITO"
+                buttonToggleFavorite.text = "✖ Quitar Favorito"
+            }
+        }
     }
 }

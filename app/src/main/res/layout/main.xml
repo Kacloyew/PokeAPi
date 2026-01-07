@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!-- Toolbar SIMPLE -->
     <TextView
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -14,11 +13,10 @@
         android:background="@color/purple_500"
         android:gravity="center"
         android:text="Pokédex"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <!-- Contenedor para fragments -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
